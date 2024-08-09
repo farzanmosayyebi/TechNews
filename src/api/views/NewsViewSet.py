@@ -1,17 +1,16 @@
-from django_filters import rest_framework as filters
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import mixins, viewsets
 from rest_framework.response import Response
 
 from data import models
-from service import filters as appfilters
 from service import pagination, serializers
 
 tag_param = openapi.Parameter("tags",
                             openapi.IN_QUERY,
-                            type = openapi.TYPE_STRING,
-                            description = "Filter by tags. values must be separated by ',' (e.g. Technology,Programming)")
+                            type = openapi.TYPE_ARRAY,
+                            items = openapi.Items(type = "string"),
+                            description = "Filter by tag.")
 
 class NewsViewSet(mixins.ListModelMixin,
                       mixins.RetrieveModelMixin,
@@ -19,16 +18,16 @@ class NewsViewSet(mixins.ListModelMixin,
     queryset = models.News.objects.prefetch_related("tags").all()
     serializer_class = serializers.NewsSerializer
     pagination_class = pagination.CustomPagiation
-    filter_backends = [
-        filters.DjangoFilterBackend,
-    ]
-    filterset_class = appfilters.NewsFilter
 
     @swagger_auto_schema(manual_parameters = [tag_param])
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
-        filter = appfilters.NewsFilter(data = request.GET, queryset = queryset)
-        queryset = filter.qs
+
+        tag_titles = request.GET.get("tags")
+        if tag_titles is not None:
+            tag_titles = tag_titles.strip().split(",")
+            tags = models.Tag.objects.filter(title__in=tag_titles)
+            queryset = queryset.filter(tags__in=tags).distinct()
 
         page = self.paginate_queryset(queryset)
         if page is not None:
