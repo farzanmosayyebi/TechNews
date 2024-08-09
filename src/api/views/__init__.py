@@ -1,5 +1,5 @@
-from api.views.NewsListAPIView import NewsListView
+from api.views.NewsListAPIView import NewsListAPIView
 
 __all__ = [
-    NewsListView,
+    NewsListAPIView,
 ]
