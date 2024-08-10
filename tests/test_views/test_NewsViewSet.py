@@ -61,7 +61,6 @@ class NewsViewSetTest(TestCase):
     def test_news_list_filter_by_tag_2(self):
         tags = models.Tag.objects.filter(title__in = ["tag2", "tag3"]).only("title")
         tag_titles = ','.join([tag.title for tag in tags])
-        print(tag_titles)
         response = self.client.get(reverse_querystring(
             "news-list", query_kwargs= {
                 "tags": tag_titles
