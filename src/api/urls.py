@@ -3,7 +3,7 @@ from api import views
 from rest_framework import routers
 
 urlpatterns = [
-    # urls.path("news/", views.NewsListAPIView)
+    urls.path("crawl/", views.crawl)
 ]
 
 router = routers.DefaultRouter()
