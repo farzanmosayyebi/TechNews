@@ -26,8 +26,8 @@ class NewsViewSet(mixins.ListModelMixin,
         tag_titles = request.GET.get("tags")
         if tag_titles is not None:
             tag_titles = tag_titles.strip().split(",")
-            tags = models.Tag.objects.filter(title__in=tag_titles)
-            queryset = queryset.filter(tags__in=tags).distinct()
+            for tag in tag_titles:
+                queryset = queryset.filter(tags__title__iexact=tag).distinct()
 
         page = self.paginate_queryset(queryset)
         if page is not None:
