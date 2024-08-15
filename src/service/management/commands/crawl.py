@@ -4,7 +4,7 @@ from service.crawlers import ZoomitCrawler
 
 
 class Command(BaseCommand):
-    help = "Release the spiders"
+    help = "Release the spiders, Run the crawlers."
 
     def add_arguments(self, parser: CommandParser) -> None:
         super().add_arguments(parser)
