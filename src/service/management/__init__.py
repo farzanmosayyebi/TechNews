@@ -1,0 +1,1 @@
+from service.management.commands import crawl
