@@ -1,5 +1,7 @@
 from django.core.management.base import BaseCommand
+
 from service.crawlers import ZoomitCrawler
+
 
 class Command(BaseCommand):
     help = "Release the spiders"
