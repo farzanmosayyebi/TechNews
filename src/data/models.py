@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class News(models.Model):
     title = models.CharField(max_length = 255)
     text = models.TextField()
@@ -8,6 +9,13 @@ class News(models.Model):
 
     class Meta:
         verbose_name_plural = "News"
+
+    def __str__(self) -> str:
+        return self.title
+    
+    
+class Tag(models.Model):
+    title = models.CharField(max_length = 255)
 
     def __str__(self) -> str:
         return self.title

@@ -1,10 +1,8 @@
-from django import urls
-from api import views
 from rest_framework import routers
 
-urlpatterns = [
-    urls.path("crawl/", views.crawl)
-]
+from api import views
+
+urlpatterns = []
 
 router = routers.DefaultRouter()
 

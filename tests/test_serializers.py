@@ -1,8 +1,9 @@
 import lorem
 from django.test import TestCase
 
-from service import serializers
 from data import models
+from service import serializers
+
 
 class NewsSerializerTest(TestCase):
     @classmethod
