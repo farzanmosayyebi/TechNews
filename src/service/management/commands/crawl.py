@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandParser
 
-from service.crawlers import ZoomitCrawler
+from service.crawl import crawl
 
 
 class Command(BaseCommand):
@@ -14,7 +14,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         limit = options.get("limit")
-        crawler = ZoomitCrawler()
-        item_count = crawler.crawl(limit)
+        item_count = crawl(limit)
         self.stdout.write(f"Crawled {item_count} items.")
     
