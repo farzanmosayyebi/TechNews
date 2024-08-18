@@ -136,10 +136,7 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-CELERY_BROKER_URL = "redis://localhost/0"
-
-#: Only add pickle to this list if your broker is secured
-#: from unwanted access (see userguide/security.html)
+CELERY_BROKER_URL = env("CELERY_BROKER_URL")
 CELERY_ACCEPT_CONTENT = ["json"]
-CELERY_RESULT_BACKEND = "redis://localhost/0"
+CELERY_RESULT_BACKEND = env("CELERY_RESULT_BACKEND")
 CELERY_TASK_SERIALIZER = "json"
