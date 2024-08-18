@@ -182,3 +182,5 @@ cython_debug/
 
 Pipfile
 Pipfile.lock
+
+celerybeat-schedule.*
