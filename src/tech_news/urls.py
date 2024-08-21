@@ -25,7 +25,7 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(
     openapi.Info(
-      title="CoursePlatform API",
+      title="Tech News API",
       default_version='v1',
       description="",
       terms_of_service="https://www.google.com/policies/terms/",
