@@ -3,6 +3,7 @@ from typing import Any
 import scrapy
 from scrapy.http import Response
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -14,7 +15,13 @@ class NewsSpider(scrapy.Spider):
     name = "news"
 
     def __init__(self, name: str | None = None, limit = None, **kwargs: Any):
-        self.driver = webdriver.Chrome()
+        chrome_options = Options()
+        chrome_options.add_argument('--ignore-ssl-errors=yes')
+        chrome_options.add_argument('--ignore-certificate-errors')
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--headless")
+
+        self.driver = webdriver.Chrome(options = chrome_options)
         self.driver_wait = WebDriverWait(self.driver, 10)
         self.url = "https://www.zoomit.ir/archive/"
         self.count = 0
@@ -31,7 +38,8 @@ class NewsSpider(scrapy.Spider):
         The total number of extracted links will be equal to `self.limit` which is
         being counted by `self.count`.
         """
-
+        self.driver.maximize_window()
+        
         self.driver.get(self.url)
         wait_element = "div.cggfyn"
 
@@ -52,6 +60,7 @@ class NewsSpider(scrapy.Spider):
             else:
                 buttons[0].find_element(By.CSS_SELECTOR, "svg").click()
 
+        self.driver.close()
         self.driver.quit()
 
     def parse(self, response: Response, **kwargs):
