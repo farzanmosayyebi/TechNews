@@ -4,6 +4,8 @@ from service.crawl import crawl
 
 
 class Command(BaseCommand):
+    """Custom django-admin command to run the crawlers."""
+
     help = "Release the spiders, Run the crawlers."
 
     def add_arguments(self, parser: CommandParser) -> None:

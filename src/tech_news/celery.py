@@ -14,7 +14,7 @@ app.conf.timezone = "Asia/Tehran"
 app.conf.beat_schedule = {
     "say-hello": {
         "task": "tasks.crawl_zoomit",
-        "schedule": crontab(minute=0, hour=0),
+        "schedule": crontab(minute=0, hour=0), # Execute daily at midnight.
     },
 }
 
