@@ -5,10 +5,8 @@ services:
     user: postgres
     volumes:
       - pg_data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=technewsdb
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=psql2000
+    env_file:
+      - app.env
     ports:
       - '5432:5432'
     healthcheck:
@@ -18,7 +16,9 @@ services:
       retries: 5
 
   backend:
-    image: backend-base:1.0
+    build:
+      context: .
+      dockerfile: ./Dockerfile.base
     container_name: technews-backend
     command: bash -c "
       cd src
@@ -26,15 +26,8 @@ services:
       && python manage.py runserver 0.0.0.0:8000"
     volumes: 
       - app_data:/app
-    environment:
-      - SECRET_KEY=django-insecure-)g+)1$640e@dzwxfcljf9!%^gf^^6x50qu9sn$%=q0**sq2ixn
-      - DB_NAME=technewsdb
-      - DB_USER=postgres
-      - DB_PASSWORD=psql2000
-      - DB_HOST=postgres
-      - DB_PORT=5432    
-      - CELERY_BROKER_URL=redis://redis:6379/0 
-      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    env_file:
+      - app.env
     ports:
       - '8000:8000'
     depends_on: 
@@ -53,52 +46,53 @@ services:
      - '6379:6379'
   
   celery-worker:
-    image: backend-base:1.0
+    build: 
+      context: .
+      dockerfile: ./Dockerfile.worker
     container_name: celery-worker
     command: bash -c "
       cd src
+      && python manage.py crawl --limit 500
       && celery -A tech_news worker -l debug --pool=solo"
     volumes:
       - app_data:/app
-    environment:
-      - SECRET_KEY=django-insecure-)g+)1$640e@dzwxfcljf9!%^gf^^6x50qu9sn$%=q0**sq2ixn
-      - DB_NAME=technewsdb
-      - DB_USER=postgres
-      - DB_PASSWORD=psql2000
-      - DB_HOST=postgres
-      - DB_PORT=5432    
-      - CELERY_BROKER_URL=redis://redis:6379/0 
-      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    env_file:
+      - app.env
     depends_on:
-      - redis
+      db:
+          condition: service_healthy
+          restart: true
+      redis:
+        condition: service_started
   
   celery-beat:
-    image: backend-base:1.0
+    build:
+      context: .
+      dockerfile: ./Dockerfile.base
     container_name: celery-beat
     command: bash -c "
       cd src
+      && until celery -A tech_news inspect ping; do 
+        echo 'workers not ready'; 
+        sleep 1; 
+      done \
       && celery -A tech_news beat -l debug"
     volumes:
       - app_data:/app
-    environment:
-      - SECRET_KEY=django-insecure-)g+)1$640e@dzwxfcljf9!%^gf^^6x50qu9sn$%=q0**sq2ixn
-      - DB_NAME=technewsdb
-      - DB_USER=postgres
-      - DB_PASSWORD=psql2000
-      - DB_HOST=postgres
-      - DB_PORT=5432    
-      - CELERY_BROKER_URL=redis://redis:6379/0 
-      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    env_file:
+      - app.env
     depends_on:
       - redis
       - celery-worker
 
   celery-flower:
-    image: backend-base:1.0
+    build:
+      context: .
+      dockerfile: ./Dockerfile.base
     container_name: celery-flower
     command: bash -c "
       cd src \
-      && until timeout 10s celery -A tech_news inspect ping; do 
+      && until celery -A tech_news inspect ping; do 
         echo 'workers not ready'; 
         sleep 1; 
       done \
@@ -107,15 +101,8 @@ services:
       - app_data:/app
     ports:
       - '5555:5555'
-    environment:
-      - SECRET_KEY=django-insecure-)g+)1$640e@dzwxfcljf9!%^gf^^6x50qu9sn$%=q0**sq2ixn
-      - DB_NAME=technewsdb
-      - DB_USER=postgres
-      - DB_PASSWORD=psql2000
-      - DB_HOST=postgres
-      - DB_PORT=5432    
-      - CELERY_BROKER_URL=redis://redis:6379/0 
-      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    env_file:
+      - app.env
     depends_on:
       - redis
       - celery-worker
