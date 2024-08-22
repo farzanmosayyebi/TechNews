@@ -5,8 +5,10 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 This is the Back-end of a news website, which includes a web crawler that can crawl news from `zoomit.ir` website.
-- [Deployed website (API)](https://fartechnews.darkube.app/news)
-- [Celery Flower](https://fartechnews-monitor.darkube.app/)
+- The project is accessible through the links below:
+   - [Deployed website (API)](https://fartechnews.darkube.app/news)
+   - [Celery Flower](https://fartechnews-monitor.darkube.app/)
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Built With
