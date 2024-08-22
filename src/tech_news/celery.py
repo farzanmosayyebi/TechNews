@@ -9,11 +9,12 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "tech_news.settings")
 app = Celery("tech_news")
 
 app.config_from_object(f"django.conf:settings", namespace="CELERY")
+app.conf.timezone = "Asia/Tehran"
 
 app.conf.beat_schedule = {
     "say-hello": {
         "task": "tasks.crawl_zoomit",
-        "schedule": crontab(),
+        "schedule": crontab(minute=0, hour=0),
     },
 }
 
