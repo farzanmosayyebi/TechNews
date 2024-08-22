@@ -5,6 +5,8 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 This is the Back-end of a news website, which includes a web crawler that can crawl news from `zoomit.ir` website.
+- [Deployed website (API)](https://fartechnews.darkube.app/news)
+- [Celery Flower](https://fartechnews-monitor.darkube.app/)
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Built With
@@ -21,6 +23,13 @@ This is the Back-end of a news website, which includes a web crawler that can cr
 
 * ![Selenium](https://img.shields.io/badge/-selenium-%43B02A?style=for-the-badge&logo=selenium&logoColor=white)
 
+* ![Scrapy Badge](https://img.shields.io/badge/Scrapy-60A839?logo=scrapy&logoColor=fff&style=for-the-badge)
+
+* ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+
+* ![Celery](https://img.shields.io/badge/celery-%23a9cc54.svg?style=for-the-badge&logo=celery&logoColor=ddf4a4)
+
+* ![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=for-the-badge&logo=redis&logoColor=white)
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
@@ -72,9 +81,6 @@ This is the Back-end of a news website, which includes a web crawler that can cr
    python manage.py migrate
    ```
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 <!-- USAGE EXAMPLES -->
 ## Usage
 
@@ -102,7 +108,7 @@ This is the Back-end of a news website, which includes a web crawler that can cr
     ```sh
     python manage.py test ../tests
     ```
- 
+
 ### Running the crawler
 - In `src` directory, run
 
@@ -120,6 +126,24 @@ This is the Back-end of a news website, which includes a web crawler that can cr
     ```
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+### Running with docker compose
+
+1. In root directory of the project, run:
+
+   ```sh
+   docker compose up
+   ```
+   **Note**: You need to provide a file named `app.env` (using `--env-file`) that contains the environment variables for the project. \
+   \
+   **About Dockerfiles:**
+      - Two dockerfiles are implemented :
+         - **Dockerfile.base**: Which is the base file that only installs dependencies. Backend, celery-beat and celery-flower containers will be run upon the image built from this file.
+         - **Dockerfile.worker**: This file also installs Google Chrome and needed packages in order to be able to run selenium in celery workers. Celery-worker container will be run upon the image built from this file.
+         
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Crawler schedule
+   At startup, 500 news will be crawled from `zoomit.ir`. After that, celery beat is scheduled to push crawl tasks to message queue daily at midnight. which means everyday at midnight, 60 news items will be crawled from `zoomit.ir`.
 
 <!-- LICENSE -->
 ## License
